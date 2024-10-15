@@ -1,18 +1,16 @@
 const Appointment = require('../Models/Appointment');
-const { sendConfirmationEmail, sendRescheduleEmail } = require('../utils/mailer'); // Import both mail functions
-
+const { sendConfirmationEmail, sendRescheduleEmail } = require('../utils/mailer');
 
 // Controller to book an appointment
 const bookAppointment = async (req, res) => {
   try {
-    const { a_name, a_email, a_service, a_date, a_outlet, a_timeslot, a_specialrequest, local_email } = req.body;
+    const { a_name, a_email, a_service, a_date, a_outlet, a_timeslot, a_specialrequest, local_email, total_price, booking_price } = req.body;
 
     // Check if there are already 3 appointments for the same date, time slot, outlet, and local email
     const appointmentCount = await Appointment.countDocuments({
-      a_date: new Date(a_date), // Convert date string to Date object if needed
+      a_date: new Date(a_date),
       a_timeslot: a_timeslot,
       a_outlet: a_outlet,
-
     });
 
     if (appointmentCount >= 3) {
@@ -28,7 +26,9 @@ const bookAppointment = async (req, res) => {
       a_outlet,
       a_timeslot,
       a_specialrequest,
-      local_email // Include local_email in the appointment document
+      local_email,
+      total_price,     // Include total price
+      booking_price,   // Include booking price
     });
 
     // Save to database
@@ -43,50 +43,39 @@ const bookAppointment = async (req, res) => {
   }
 };
 
-// Controller to get all appointments (for testing)
-const getAllAppointments = async (req, res) => {
-  try {
-    const appointments = await Appointment.find({});
-    res.status(200).json(appointments);
-  } catch (error) {
-    res.status(500).json({ message: 'Error retrieving appointments', error });
-  }
-};
-
+// Controller to get appointments by email
 const getAppointmentsByEmail = async (req, res) => {
-  const { email } = req.query; // Get email from query parameters
+  const { email } = req.query;
 
   try {
-    const appointments = await Appointment.find({ local_email: email }); // Fetch appointments based on email
+    const appointments = await Appointment.find({ local_email: email });
     res.status(200).json(appointments);
   } catch (error) {
     res.status(500).json({ message: 'Error retrieving appointments', error });
   }
 };
 
-// Reschedule Appointment
+// Controller to reschedule an appointment
 const rescheduleAppointment = async (req, res) => {
   try {
     const { id } = req.params;
-    const { a_date, a_timeslot, a_outlet } = req.body; // New date, timeslot, and outlet
+    const { a_date, a_timeslot, a_outlet } = req.body;
 
-    // Update the appointment
     const updatedAppointment = await Appointment.findByIdAndUpdate(
       id,
       {
         a_date: new Date(a_date),
         a_timeslot: a_timeslot,
-        a_outlet: a_outlet || undefined, // Optional outlet change
+        a_outlet: a_outlet || undefined,
       },
-      { new: true } // Return the updated document
+      { new: true }
     );
 
     if (!updatedAppointment) {
       return res.status(404).json({ message: 'Appointment not found' });
     }
 
-    // Send the reschedule email
-    sendRescheduleEmail(updatedAppointment.a_email, updatedAppointment); // Sending email notification
+    sendRescheduleEmail(updatedAppointment.a_email, updatedAppointment);
 
     res.status(200).json({ message: 'Appointment rescheduled successfully', appointment: updatedAppointment });
   } catch (error) {
@@ -94,13 +83,11 @@ const rescheduleAppointment = async (req, res) => {
   }
 };
 
-
-// Cancel Appointment
+// Controller to cancel an appointment
 const cancelAppointment = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Delete the appointment from the database
     const deletedAppointment = await Appointment.findByIdAndDelete(id);
 
     if (!deletedAppointment) {
@@ -113,11 +100,9 @@ const cancelAppointment = async (req, res) => {
   }
 };
 
-
 module.exports = {
   bookAppointment,
-  getAllAppointments,
   getAppointmentsByEmail,
-  rescheduleAppointment, // Export the reschedule function
-  cancelAppointment,     // Export the cancel function
+  rescheduleAppointment,
+  cancelAppointment,
 };

@@ -10,9 +10,9 @@ router.post('/book', checkAppointmentLimit, appointmentController.bookAppointmen
 router.get('/', appointmentController.getAppointmentsByEmail);
 
 // Route to reschedule an appointment
-router.put('/reschedule/:id', appointmentController.rescheduleAppointment);  // Use PUT for updating (rescheduling)
+router.put('/reschedule/:id', appointmentController.rescheduleAppointment);
 
 // Route to cancel an appointment
-router.delete('/cancel/:id', appointmentController.cancelAppointment);  // Use DELETE for canceling appointments
+router.delete('/cancel/:id', appointmentController.cancelAppointment);
 
 module.exports = router;

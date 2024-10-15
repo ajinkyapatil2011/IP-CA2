@@ -16,7 +16,7 @@
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
-  z-index: 1; /* Ensure the overlay is behind the form */
+  z-index: 1;
 }
 
 .appointment-form-container {
@@ -26,12 +26,16 @@
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  position: relative; /* Set the form's position to relative */
-  z-index: 2; /* Ensure the form is on top of the overlay */
+  position: relative;
+  z-index: 2;
 }
+
 .appointment-form-heading {
   text-align: center;
   margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
 }
 
 .appointment-form-row {
@@ -50,6 +54,7 @@
 .appointment-form-label {
   margin-bottom: 5px;
   font-weight: bold;
+  color: #333;
 }
 
 .appointment-form-input,
@@ -59,6 +64,7 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   width: 100%;
+  font-size: 16px;
 }
 
 .appointment-form-textarea {
@@ -66,7 +72,36 @@
   resize: none;
 }
 
-.appointment-submit-button {
+/* Add this to your CSS */
+.appointment-services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.appointment-service-item {
+  display: flex;
+  align-items: center;
+  background-color: #f8f8f8;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.appointment-form-checkbox-label {
+  margin-left: 8px;
+}
+
+.appointment-price-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.appointment-form-submit-btn {
   background-color: #4caf50;
   color: white;
   padding: 10px 20px;
@@ -74,9 +109,11 @@
   border-radius: 5px;
   cursor: pointer;
   width: 100%;
+  font-size: 18px;
+  transition: background-color 0.3s ease;
 }
 
-.appointment-submit-button:hover {
+.appointment-form-submit-btn:hover {
   background-color: #45a049;
 }
 
@@ -90,5 +127,14 @@
 @media (max-width: 768px) {
   .appointment-form-row {
     flex-direction: column;
+  }
+
+  .appointment-service-item {
+    width: 100%; /* Full-width on smaller screens */
+  }
+
+  .appointment-price-row {
+    flex-direction: column;
+    gap: 10px;
   }
 }

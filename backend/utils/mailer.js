@@ -12,16 +12,23 @@ const sendConfirmationEmail = (recipient, appointmentDetails) => {
     HtmlBody: `
       <h1>Appointment Confirmed</h1>
       <p>Dear ${appointmentDetails.a_name},</p>
-      <p>Your appointment for <strong>${appointmentDetails.a_service}</strong> on <strong>${appointmentDetails.a_date}</strong> at <strong>${appointmentDetails.a_outlet}</strong> has been confirmed.</p>
-      <p>Timeslot: ${appointmentDetails.a_timeslot}</p>
-      <p>${appointmentDetails.a_specialrequest ? `Special Request: ${appointmentDetails.a_specialrequest}` : ''}</p>
-      <p>Thank you for choosing us!</p>
+      <p>Your appointment for the following services has been confirmed:</p>
+      <ul>
+        ${appointmentDetails.a_service.map(service => `<li>${service}</li>`).join('')}
+      </ul>
+      <p><strong>Date:</strong> ${new Date(appointmentDetails.a_date).toLocaleDateString()}</p>
+      <p><strong>Timeslot:</strong> ${appointmentDetails.a_timeslot}</p>
+      <p><strong>Outlet:</strong> ${appointmentDetails.a_outlet}</p>
+      <p><strong>Total Price:</strong> ₹${appointmentDetails.total_price}</p>
+      <p><strong>Booking Price:</strong> ₹${appointmentDetails.booking_price}</p>
+      ${appointmentDetails.a_specialrequest ? `<p><strong>Special Request:</strong> ${appointmentDetails.a_specialrequest}</p>` : ''}
+      <p>Thank you for choosing our services! We look forward to seeing you.</p>
     `,
   }, (error, result) => {
     if (error) {
-      console.error('Error sending email:', error);
+      console.error('Error sending confirmation email:', error);
     } else {
-      console.log('Email sent:', result);
+      console.log('Confirmation email sent:', result);
     }
   });
 };
@@ -35,12 +42,15 @@ const sendRescheduleEmail = (recipient, appointmentDetails) => {
     HtmlBody: `
       <h1>Appointment Rescheduled</h1>
       <p>Dear ${appointmentDetails.a_name},</p>
-      <p>Your appointment for <strong>${appointmentDetails.a_service}</strong> has been successfully rescheduled.</p>
-      <p>New Date: <strong>${appointmentDetails.a_date}</strong></p>
-      <p>New Timeslot: <strong>${appointmentDetails.a_timeslot}</strong></p>
-      <p>Location: <strong>${appointmentDetails.a_outlet}</strong></p>
-      <p>${appointmentDetails.a_specialrequest ? `Special Request: ${appointmentDetails.a_specialrequest}` : ''}</p>
-      <p>Thank you for continuing to trust us with your service!</p>
+      <p>Your appointment for the following services has been rescheduled:</p>
+      <ul>
+        ${appointmentDetails.a_service.map(service => `<li>${service}</li>`).join('')}
+      </ul>
+      <p><strong>New Date:</strong> ${new Date(appointmentDetails.a_date).toLocaleDateString()}</p>
+      <p><strong>New Timeslot:</strong> ${appointmentDetails.a_timeslot}</p>
+      <p><strong>Outlet:</strong> ${appointmentDetails.a_outlet}</p>
+      ${appointmentDetails.a_specialrequest ? `<p><strong>Special Request:</strong> ${appointmentDetails.a_specialrequest}</p>` : ''}
+      <p>Thank you for rescheduling your appointment. We look forward to seeing you soon!</p>
     `,
   }, (error, result) => {
     if (error) {

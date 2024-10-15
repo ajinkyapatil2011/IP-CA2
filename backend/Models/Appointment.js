@@ -10,7 +10,7 @@ const appointmentSchema = new mongoose.Schema({
     required: true,
   },
   a_service: {
-    type: String,
+    type: [String], // Changed to an array of strings to allow multiple services
     required: true,
   },
   a_date: {
@@ -31,6 +31,14 @@ const appointmentSchema = new mongoose.Schema({
   local_email: {
     type: String,
     required: true, // Marked as required
+  },
+  total_price: { // New field for total price of the services
+    type: Number,
+    required: true,
+  },
+  booking_price: { // New field for additional booking price (if applicable)
+    type: Number,
+    required: true,
   }
 });
 
